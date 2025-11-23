@@ -1,0 +1,41 @@
+.teams-container {
+  display: flex;
+  flex-direction: column;
+  width: 300px;
+  gap: 10px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border: 1px solid #e0e0e0;
+  font-family: "Roboto", sans-serif;
+  margin: 0px;
+}
+.teams-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  font-size: 24px;
+  font-weight: bold;
+  margin: 0px;
+}
+.team-item {
+  padding: 10px 15px;
+  font-size: 16px;
+  color: #333333;
+  border: 1px solid #e0e0e0;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+.add-team-button {
+  padding: 10px 20px;
+  font-size: 16px;
+  color: #ffffff;
+  background-color: #730be9;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.add-team-button:hover {
+  background-color: #45a049;
+}

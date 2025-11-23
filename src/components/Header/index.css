@@ -1,0 +1,56 @@
+.header-layout {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #1976d2;
+  color: #ffffff;
+}
+.header-nav-container {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+.website-title {
+  font-size: 24px;
+  font-family: "Roboto", sans-serif;
+  font-weight: bold;
+}
+
+.logout-button {
+  background-color: #e53935;
+  color: #ffffff;
+  height: 30px;
+  min-width: 70px;
+  border-width: 0px;
+  border-radius: 8px;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Roboto";
+  font-weight: bold;
+  outline: none;
+}
+.logout-button:hover {
+  background-color: #c62828;
+}
+.admin-icon {
+  font-size: 24px;
+  color: #ffffff;
+}
+.admin-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  font-family: "Roboto", sans-serif;
+}
+.admin-text {
+  font-size: 16px;
+  font-family: "Roboto", sans-serif;
+  margin: 0;
+}
