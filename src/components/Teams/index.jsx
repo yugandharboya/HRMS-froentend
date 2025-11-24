@@ -1,5 +1,8 @@
 import "./index.css";
+import { useState } from "react";
+
 const Teams = () => {
+  const [teams, setTeams] = useState([]);
   return (
     <div className="teams-container">
       <div className="teams-header">

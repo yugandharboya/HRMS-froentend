@@ -3,8 +3,10 @@ import React from "react";
 import { GrUserAdmin } from "react-icons/gr";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
+import RegisterAdmin from "../RegisterAdmin/index.jsx";
 
 const Header = () => {
+  const token = Cookies.get("jwt_token");
   const navigate = useNavigate();
   const handleLogout = () => {
     console.log("Logout clicked");
@@ -20,8 +22,7 @@ const Header = () => {
           <GrUserAdmin className="admin-icon" />
           <p className="admin-text">Admin</p>
         </button>
-
-        <button className="login-button">Login</button>
+        <button className="register-admin-btn">Register</button>
         <button className="logout-button" onClick={handleLogout}>
           Logout
         </button>

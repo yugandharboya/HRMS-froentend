@@ -1,14 +1,5 @@
 import "./index.css";
 import { useState } from "react";
-// POST http://localhost:5000/auth/register
-// Content-Type: application/json
-
-//  {
-//   "orgName": "TechLabs",
-//   "adminName": "Rajesh",
-//   "email": "admin@techlabs.com",
-//   "password": "admin123"
-// }
 
 const RegisterAdmin = () => {
   const [orgName, setOrgName] = useState("");

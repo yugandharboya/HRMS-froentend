@@ -107,14 +107,16 @@ const Home = () => {
               Add Employee
             </button>
           </div>
-          {state.loading && <LoadingView />}
-          <EmployeesTable
-            fetchedEmployees={state.fetchedEmployees}
-            handleEditEmployee={handleEditEmployee}
-            fetchDatabase={fetchDatabase}
-            setActiveEmployeeToEdit={setActiveEmployeeToEdit}
-          />
-          <Teams />
+          <div className="main-content">
+            {state.loading && <LoadingView />}
+            <EmployeesTable
+              fetchedEmployees={state.fetchedEmployees}
+              handleEditEmployee={handleEditEmployee}
+              fetchDatabase={fetchDatabase}
+              setActiveEmployeeToEdit={setActiveEmployeeToEdit}
+            />
+            <Teams />
+          </div>
         </main>
       </div>
     </div>
