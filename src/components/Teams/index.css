@@ -1,40 +1,69 @@
 .teams-container {
   display: flex;
   flex-direction: column;
-  width: 300px;
-  gap: 10px;
-  padding: 20px;
-  background-color: #f9f9f9;
-  border: 1px solid #e0e0e0;
+  justify-content: flex-start;
+  width: 100%;
+  gap: 5px;
+
   font-family: "Roboto", sans-serif;
   margin: 0px;
 }
 .teams-header {
   display: flex;
-  flex-direction: row;
   align-items: center;
-  justify-content: space-between;
   width: 100%;
   font-size: 24px;
   font-weight: bold;
   margin: 0px;
+  gap: 50px;
+}
+.teams-header-title {
+  margin: 0;
+}
+.teams-list {
+  list-style-type: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 0;
+  margin: 0;
 }
 .team-item {
-  padding: 10px 15px;
-  font-size: 16px;
-  color: #333333;
-  border: 1px solid #e0e0e0;
-  border-radius: 5px;
-  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 10px;
+  height: auto;
+  padding: 10px;
+  margin: 0px;
+  border-bottom: 1px solid #e0e0e0;
+  background-color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+.team-name {
+  margin: 0;
+  padding: 0;
+  font-weight: bold;
+}
+.team-employees-text {
+  margin: 0;
+  padding: 0;
+  font-size: 14px;
+  color: #555555;
+}
+
 .add-team-button {
-  padding: 10px 20px;
+  height: 30px;
+  width: auto;
   font-size: 16px;
   color: #ffffff;
   background-color: #730be9;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .add-team-button:hover {
   background-color: #45a049;

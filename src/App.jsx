@@ -12,7 +12,6 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route
-          exact
           path="/"
           element={
             <ProtectedRoute>
@@ -27,3 +26,14 @@ function App() {
 }
 
 export default App;
+{
+  /* <Route
+  path="/"
+  element={
+    <ProtectedRoute>
+      {" "}
+      <Home />{" "}
+    </ProtectedRoute>
+  }
+/>; */
+}

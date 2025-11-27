@@ -8,16 +8,16 @@ const Sidebar = () => {
     <div className="sidebar-layout">
       <div className="sidebar-element">
         <RiDashboardHorizontalFill className="sidebar-icon" />
-        <p className="sidebar-item">Dashboard</p>
+        <button className="sidebar-item">Dashboard</button>
       </div>
 
       <div className="sidebar-element">
         <PiUsersThreeFill className="sidebar-icon" />
-        <p className="sidebar-item">Employees</p>
+        <button className="sidebar-item">Employees</button>
       </div>
       <div className="sidebar-element">
         <BsMicrosoftTeams className="sidebar-icon" />
-        <p className="sidebar-item">Teams</p>
+        <button className="sidebar-item">Teams</button>
       </div>
     </div>
   );

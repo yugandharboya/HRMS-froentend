@@ -6,6 +6,8 @@ import Teams from "../Teams";
 import EditEmployee from "../EditEmployee";
 import LoadingView from "../LoadingView";
 import AddEmployee from "../AddEmployee";
+import AddTeam from "../AddTeam";
+
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 
@@ -36,14 +38,20 @@ const Home = () => {
   };
   const [activeEmployeeToEdit, setActiveEmployeeToEdit] = useState(null);
   const [activeEmployeeToAdd, setActiveEmployeeToAdd] = useState(false);
+  const [showAddTeamForm, setShowAddTeamForm] = useState(false);
+  const [teamsList, setTeamsList] = useState([]);
   const [state, dispatch] = useReducer(reducer, initialState);
   const navigate = useNavigate();
 
   const fetchDatabase = async () => {
     dispatch({ type: "FETCH_START" });
+    const token = Cookies.get("jwt_token");
+    console.log("token", token);
+    if (!token) {
+      navigate("/auth/login");
+      return;
+    }
     try {
-      const token = Cookies.get("jwt_token");
-
       const options = {
         method: "GET",
         headers: {
@@ -51,7 +59,7 @@ const Home = () => {
           Authorization: `Bearer ${token}`,
         },
       };
-      const url = "https://hrms-backend-0bid.onrender.com/employees";
+      const url = "http://localhost:5000/employees";
 
       const response = await fetch(url, options);
       const data = await response.json();
@@ -66,6 +74,33 @@ const Home = () => {
       console.error("Error fetching employees:", error);
     }
   };
+  const fetchTeams = async () => {
+    const token = Cookies.get("jwt_token");
+    if (!token) {
+      navigate("/auth/login");
+      return;
+    }
+    try {
+      const url = "http://localhost:5000/teams";
+      const options = {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      const response = await fetch(url, options);
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch teams");
+      }
+      const data = await response.json();
+
+      setTeamsList((prev) => [...data]);
+    } catch (error) {
+      console.error("Error fetching teams:", error);
+    }
+  };
 
   const handleEditEmployee = (id) => {
     const employeeToEdit = state.fetchedEmployees.find((emp) => emp.id === id);
@@ -76,9 +111,9 @@ const Home = () => {
   };
   useEffect(() => {
     fetchDatabase();
+    fetchTeams();
   }, [state.fetchedEmployees.length]);
 
-  console.log("Fetched Employees:", state.fetchedEmployees);
   return (
     <div className="home-page-layout">
       {activeEmployeeToEdit && (
@@ -94,30 +129,46 @@ const Home = () => {
           fetchDatabase={fetchDatabase}
         />
       )}
+      {showAddTeamForm && (
+        <AddTeam
+          setShowAddTeamForm={setShowAddTeamForm}
+          fetchTeams={fetchTeams}
+        />
+      )}
       <Header />
-      <div className="content-layout">
+      <div className="layout-row">
         <Sidebar />
-        <main className="main-content-area">
-          <div className="main-content-header">
-            <h2 className="main-content-header-title">Employees</h2>
-            <button
-              className="add-employee-button"
-              onClick={() => setActiveEmployeeToAdd((prev) => !prev)}
-            >
-              Add Employee
-            </button>
-          </div>
-          <div className="main-content">
-            {state.loading && <LoadingView />}
-            <EmployeesTable
-              fetchedEmployees={state.fetchedEmployees}
-              handleEditEmployee={handleEditEmployee}
-              fetchDatabase={fetchDatabase}
-              setActiveEmployeeToEdit={setActiveEmployeeToEdit}
-            />
-            <Teams />
-          </div>
-        </main>
+        <div className="main-content-area">
+          {state.loading && <LoadingView />}
+          {state.error && <p className="error-message">{state.error}</p>}
+          {!state.loading && !state.error && (
+            <>
+              <div className="main-content-header">
+                <h2 className="main-content-header-title">Employees</h2>
+                <button
+                  className="add-employee-button"
+                  onClick={() => setActiveEmployeeToAdd((prev) => !prev)}
+                >
+                  Add Employee
+                </button>
+              </div>
+              <main className="main-content">
+                <EmployeesTable
+                  fetchedEmployees={state.fetchedEmployees}
+                  handleEditEmployee={handleEditEmployee}
+                  fetchDatabase={fetchDatabase}
+                  setActiveEmployeeToEdit={setActiveEmployeeToEdit}
+                />
+              </main>
+              <div className="teams-section">
+                <Teams
+                  setShowAddTeamForm={setShowAddTeamForm}
+                  teamsList={teamsList}
+                />
+              </div>
+            </>
+          )}
+        </div>
       </div>
     </div>
   );

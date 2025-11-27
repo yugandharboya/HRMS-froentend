@@ -19,7 +19,7 @@ const EmployeesTable = ({
       return;
     }
     try {
-      const url = `https://hrms-backend-0bid.onrender.com/employees/${id}`;
+      const url = `http://localhost:5000/employees/${id}`;
       const options = {
         method: "DELETE",
         headers: {

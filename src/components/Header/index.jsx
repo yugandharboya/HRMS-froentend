@@ -8,6 +8,7 @@ import RegisterAdmin from "../RegisterAdmin/index.jsx";
 const Header = () => {
   const token = Cookies.get("jwt_token");
   const navigate = useNavigate();
+
   const handleLogout = () => {
     console.log("Logout clicked");
     navigate("/auth/login");

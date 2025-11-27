@@ -5,7 +5,7 @@
   width: 100vw;
   overflow: hidden;
 }
-.content-layout {
+.layout-row {
   display: flex;
   flex-grow: 1;
   padding: 20px;
@@ -31,22 +31,28 @@
   overflow-y: auto;
   background-color: #ffffff;
   border-radius: 8px;
-  padding: 20px;
+  padding: 0px 20px 5px 20px;
   margin: 0;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .main-content-header {
+  position: sticky;
+  top: 0;
+  background-color: #ffffff;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 0px;
-  margin-bottom: 20px;
-  padding: 20px 20px;
   height: auto;
+  overflow: hidden;
 }
 .main-content-header-title {
   margin: 0;
+}
+.main-content {
+  height: 250px;
+  margin: 0px;
+  overflow-y: auto;
 }
 
 .add-employee-button {
