@@ -1,0 +1,31 @@
+.page-header {
+  background-color: #ffffff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  /* overflow: hidden; */
+}
+
+.main-content-header-title {
+  margin: 0;
+}
+.add-employee-button {
+  background-color: #1976d2;
+  color: #ffffff;
+  height: 30px;
+  min-width: 100px;
+  border-width: 0px;
+  border-radius: 8px;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Roboto", sans-serif;
+  font-weight: bold;
+  cursor: pointer;
+  outline: none;
+}
+.add-employee-button:hover {
+  background-color: #1565c0;
+}

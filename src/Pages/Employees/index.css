@@ -1,0 +1,11 @@
+.all-employees-page {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #f9f9f9;
+}
+.all-employees-wrapper {
+  margin-top: 60px;
+  display: flex;
+  padding: 20px;
+}
