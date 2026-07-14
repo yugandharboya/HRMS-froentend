@@ -1,19 +1,25 @@
-import "./index.css";
+import React, { useContext } from "react";
 import HrmsContext from "../../context";
-import { useContext } from "react";
+import { FiUserPlus, FiUsers } from "react-icons/fi";
+import "./index.css";
 
-const PageHeader = ({ employeesCount }) => {
+const PageHeader = ({ employeesCount, title = "Employee Management" }) => {
   const { setShowAddEmployeeForm } = useContext(HrmsContext);
+
   return (
-    <div className="page-header">
-      <h2 className="main-content-header-title">
-        Employees ({employeesCount})
-      </h2>
+    <div className="page-header-card">
+      <div className="page-header-title-box">
+        <FiUsers className="header-title-icon" />
+        <h2>
+          {title} <span className="header-count">({employeesCount})</span>
+        </h2>
+      </div>
       <button
-        className="add-employee-button"
-        onClick={() => setShowAddEmployeeForm((prev) => !prev)}
+        className="btn-add-employee"
+        onClick={() => setShowAddEmployeeForm(true)}
       >
-        Add Employee
+        <FiUserPlus />
+        <span>Add Employee</span>
       </button>
     </div>
   );

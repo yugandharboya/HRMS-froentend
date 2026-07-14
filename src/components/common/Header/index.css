@@ -2,58 +2,133 @@
   position: fixed;
   top: 0;
   left: 0;
-  min-width: 100%;
+  right: 0;
+  width: auto;
+  max-width: 100%;
+  z-index: 1000;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-left: 30px;
-  padding-right: 30px;
-  background-color: #1976d2;
-  color: #ffffff;
-  height: 60px;
-}
-.header-nav-container {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-.website-title {
-  font-size: 24px;
-  font-family: "Roboto", sans-serif;
-  font-weight: bold;
+  padding: 0 1.5rem;
+  background-color: var(--surface);
+  color: var(--text-primary);
+  height: 64px;
+  border-bottom: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
 }
 
-.logout-button {
-  background-color: #e53935;
-  color: #ffffff;
-  height: 30px;
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+}
+
+.mobile-hamburger-btn {
+  display: none;
+  background: none;
   border: none;
-  border-radius: 8px;
-  font-size: 15px;
+  font-size: 1.35rem;
+  color: var(--text-primary);
+  padding: 0.375rem;
+  border-radius: var(--radius-sm);
+  align-items: center;
+  justify-content: center;
+}
+
+.mobile-hamburger-btn:hover {
+  background-color: var(--surface-alt);
+}
+
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.brand-logo-icon {
+  font-size: 1.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: "Roboto";
-  font-weight: bold;
-  outline: none;
-}
-.logout-button:hover {
-  background-color: #c62828;
+  color: var(--primary);
 }
 
-.admin-button {
+.website-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+
+.header-nav-container {
   display: flex;
   align-items: center;
-  gap: 8px;
-  background: none;
-  border: none;
-  color: #ffffff;
-  cursor: pointer;
-  font-family: "Roboto", sans-serif;
+  gap: 1.25rem;
 }
-.admin-photo {
+
+.user-profile-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.375rem 0.75rem;
+  background-color: var(--surface-alt);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+}
+
+.admin-photo, .admin-photo-fallback {
   width: 32px;
   height: 32px;
   border-radius: 50%;
   object-fit: cover;
+  background-color: var(--primary-light);
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+}
+
+.admin-name {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.logout-button {
+  background-color: var(--danger);
+  color: #ffffff;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  box-shadow: 0 1px 2px rgba(239, 68, 68, 0.2);
+}
+
+.logout-button:hover {
+  background-color: var(--danger-hover);
+  transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
+  .header-container {
+    padding: 0 1rem;
+  }
+  .mobile-hamburger-btn {
+    display: flex;
+  }
+  .website-title {
+    font-size: 1.1rem;
+  }
+  .admin-name, .logout-text {
+    display: none;
+  }
+  .logout-button {
+    padding: 0.5rem;
+  }
 }

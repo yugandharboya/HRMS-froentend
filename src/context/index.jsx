@@ -36,6 +36,7 @@ export const HrmsContextProvider = ({ children }) => {
   const [showAddEmployeeForm, setShowAddEmployeeForm] = useState(false);
 
   const [employeeToEdit, setEmployeeToEdit] = useState(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const fetchEmployees = async () => {
     setEmployeesState((prev) => ({
@@ -145,6 +146,10 @@ export const HrmsContextProvider = ({ children }) => {
         // edit
         employeeToEdit,
         setEmployeeToEdit,
+
+        // mobile nav
+        isMobileMenuOpen,
+        setIsMobileMenuOpen,
       }}
     >
       {children}

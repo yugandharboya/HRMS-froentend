@@ -1,118 +1,136 @@
-import { BASE_URL } from "../../../constants/constants";
-import "./index.css";
-import { useState, useContext } from "react";
-import Cookies from "js-cookie";
+import React, { useState, useContext } from "react";
+import { updateEmployeeApi } from "../../../services/api";
 import HrmsContext from "../../../context";
+import { FiX, FiUser, FiMail, FiPhone } from "react-icons/fi";
+import "../AddEmployeeForm/index.css";
 
 const EditEmployeeForm = () => {
   const { employeeToEdit, setEmployeeToEdit, fetchEmployees } =
     useContext(HrmsContext);
 
-  const [firstName, setFirstName] = useState(employeeToEdit.first_name);
-  const [lastName, setLastName] = useState(employeeToEdit.last_name);
-  const [email, setEmail] = useState(employeeToEdit.email);
-  const [phone, setPhone] = useState(employeeToEdit.phone);
+  const [firstName, setFirstName] = useState(employeeToEdit?.first_name || "");
+  const [lastName, setLastName] = useState(employeeToEdit?.last_name || "");
+  const [email, setEmail] = useState(employeeToEdit?.email || "");
+  const [phone, setPhone] = useState(employeeToEdit?.phone || "");
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const token = Cookies.get("jwt_token");
-    if (!token) {
-      alert("Authentication token not found. Please log in again.");
-      return;
-    }
-    const updatedDetails = {
-      firstName: firstName,
-      lastName: lastName,
-      email: email,
-      phone: phone,
-    };
+    setErrorMsg("");
+    setLoading(true);
+
     try {
-      const url = `${BASE_URL}/employees/${employeeToEdit.id}`;
-      const options = {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(updatedDetails),
-      };
-      const response = await fetch(url, options);
-      console.log("Update response:", response.ok);
-      if (!response.ok) {
-        throw new Error("Failed to update employee details");
-      }
+      await updateEmployeeApi(employeeToEdit.id, {
+        firstName,
+        lastName,
+        email,
+        phone,
+      });
       await fetchEmployees();
-      alert("Employee details updated successfully!");
       setEmployeeToEdit(null);
     } catch (error) {
-      console.error("Error updating employee details:", error);
+      setErrorMsg(error.message || "Failed to update employee details");
+    } finally {
+      setLoading(false);
     }
   };
-  return (
-    <div className="edit-employee-container">
-      <h2 className="edit-employee-heading">Edit Employee </h2>
-      <form className="edit-employee-form" onSubmit={handleSubmit}>
-        <div className="form-field">
-          <label htmlFor="firstName" className="form-label">
-            First Name
-          </label>
 
-          <input
-            type="text"
-            id="firstName"
-            name="firstName"
-            value={firstName}
-            className="form-input"
-            onChange={(event) => setFirstName(event.target.value)}
-          />
+  return (
+    <div className="modal-overlay">
+      <div className="modal-card">
+        <div className="modal-header">
+          <h3>Edit Employee Details</h3>
+          <button
+            className="modal-close-btn"
+            onClick={() => setEmployeeToEdit(null)}
+          >
+            <FiX />
+          </button>
         </div>
-        <div className="form-field">
-          <label htmlFor="lastName" className="form-label">
-            Last Name
-          </label>
-          <input
-            type="text"
-            id="lastName"
-            name="lastName"
-            className="form-input"
-            value={lastName}
-            onChange={(event) => setLastName(event.target.value)}
-          />
-        </div>
-        <div className="form-field">
-          <label htmlFor="email" className="form-label">
-            Email
-          </label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            className="form-input"
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-          />
-        </div>
-        <div className="form-field">
-          <label htmlFor="phone" className="form-label">
-            Phone
-          </label>
-          <input
-            type="tel"
-            id="phone"
-            name="phone"
-            className="form-input"
-            value={phone}
-            onChange={(event) => setPhone(event.target.value)}
-          />
-        </div>
-        <button type="submit" className="save-employee-button">
-          Save Changes
-        </button>
-      </form>
-      <button className="cancel-button" onClick={() => setEmployeeToEdit(null)}>
-        Cancel
-      </button>
+
+        {errorMsg && <div className="modal-error-banner">{errorMsg}</div>}
+
+        <form className="modal-form" onSubmit={handleSubmit}>
+          <div className="form-row">
+            <div className="form-field">
+              <label htmlFor="editFirstName">First Name</label>
+              <div className="input-with-icon">
+                <FiUser className="input-icon" />
+                <input
+                  type="text"
+                  id="editFirstName"
+                  value={firstName}
+                  required
+                  onChange={(e) => setFirstName(e.target.value)}
+                  disabled={loading}
+                />
+              </div>
+            </div>
+
+            <div className="form-field">
+              <label htmlFor="editLastName">Last Name</label>
+              <div className="input-with-icon">
+                <FiUser className="input-icon" />
+                <input
+                  type="text"
+                  id="editLastName"
+                  value={lastName}
+                  required
+                  onChange={(e) => setLastName(e.target.value)}
+                  disabled={loading}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="form-field">
+            <label htmlFor="editEmail">Email Address</label>
+            <div className="input-with-icon">
+              <FiMail className="input-icon" />
+              <input
+                type="email"
+                id="editEmail"
+                value={email}
+                required
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={loading}
+              />
+            </div>
+          </div>
+
+          <div className="form-field">
+            <label htmlFor="editPhone">Phone Number</label>
+            <div className="input-with-icon">
+              <FiPhone className="input-icon" />
+              <input
+                type="tel"
+                id="editPhone"
+                value={phone}
+                required
+                onChange={(e) => setPhone(e.target.value)}
+                disabled={loading}
+              />
+            </div>
+          </div>
+
+          <div className="modal-footer">
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={() => setEmployeeToEdit(null)}
+              disabled={loading}
+            >
+              Cancel
+            </button>
+            <button type="submit" className="btn btn-primary" disabled={loading}>
+              {loading ? "Saving..." : "Save Changes"}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };
+
 export default EditEmployeeForm;

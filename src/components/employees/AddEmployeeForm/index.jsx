@@ -1,107 +1,137 @@
-import { BASE_URL } from "../../../constants/constants";
-import "./index.css";
-import { useState, useContext } from "react";
-import Cookies from "js-cookie";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useContext } from "react";
+import { addEmployeeApi } from "../../../services/api";
 import HrmsContext from "../../../context";
+import { FiX, FiUser, FiMail, FiPhone } from "react-icons/fi";
+import "./index.css";
 
 const AddEmployeeForm = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+
   const { fetchEmployees, setShowAddEmployeeForm } = useContext(HrmsContext);
-  const navigate = useNavigate();
 
-  const addEmployeeForm = async (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    const token = Cookies.get("jwt_token");
-    if (!token) {
-      alert("Authentication token not found. Please log in again.");
-      navigate("/login");
-      return;
-    }
+    setErrorMsg("");
+    setLoading(true);
 
-    const newEmployee = {
-      firstName: firstName,
-      lastName: lastName,
-      email: email,
-      phone: phone,
-    };
-    const url = `${BASE_URL}/employees`;
-    const options = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(newEmployee),
-    };
-    const response = await fetch(url, options);
-
-    if (response.ok) {
+    try {
+      await addEmployeeApi({
+        firstName,
+        lastName,
+        email,
+        phone,
+      });
       await fetchEmployees();
-      alert("Employee added successfully!");
       setShowAddEmployeeForm(false);
-    } else {
-      const data = await response.json();
-      alert(`Failed to add employee: ${data.error_msg}`);
+    } catch (error) {
+      setErrorMsg(error.message || "Failed to add employee");
+    } finally {
+      setLoading(false);
     }
   };
+
   return (
-    <div className="add-employee-container">
-      <h2 className="add-employee-heading">Add Employee</h2>
-      <form className="add-employee-form" onSubmit={addEmployeeForm}>
-        <div className="form-field">
-          <label htmlFor="firstName">First Name</label>
-          <input
-            type="text"
-            id="firstName"
-            name="firstName"
-            required
-            onChange={(event) => setFirstName(event.target.value)}
-          />
+    <div className="modal-overlay">
+      <div className="modal-card">
+        <div className="modal-header">
+          <h3>Add New Employee</h3>
+          <button
+            className="modal-close-btn"
+            onClick={() => setShowAddEmployeeForm(false)}
+          >
+            <FiX />
+          </button>
         </div>
-        <div className="form-field">
-          <label htmlFor="lastName">Last Name</label>
-          <input
-            type="text"
-            id="lastName"
-            name="lastName"
-            required
-            onChange={(event) => setLastName(event.target.value)}
-          />
-        </div>
-        <div className="form-field">
-          <label htmlFor="email">Email</label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            required
-            onChange={(event) => setEmail(event.target.value)}
-          />
-        </div>
-        <div className="form-field">
-          <label htmlFor="phone">Phone</label>
-          <input
-            type="tel"
-            id="phone"
-            name="phone"
-            required
-            onChange={(event) => setPhone(event.target.value)}
-          />
-        </div>
-        <button type="submit" className="add-employee-btn">
-          Add Employee
-        </button>
-      </form>
-      <button
-        className="cancel-add-employee-btn"
-        onClick={() => setShowAddEmployeeForm(false)}
-      >
-        Cancel
-      </button>
+
+        {errorMsg && <div className="modal-error-banner">{errorMsg}</div>}
+
+        <form className="modal-form" onSubmit={handleSubmit}>
+          <div className="form-row">
+            <div className="form-field">
+              <label htmlFor="firstName">First Name</label>
+              <div className="input-with-icon">
+                <FiUser className="input-icon" />
+                <input
+                  type="text"
+                  id="firstName"
+                  placeholder="John"
+                  value={firstName}
+                  required
+                  onChange={(e) => setFirstName(e.target.value)}
+                  disabled={loading}
+                />
+              </div>
+            </div>
+
+            <div className="form-field">
+              <label htmlFor="lastName">Last Name</label>
+              <div className="input-with-icon">
+                <FiUser className="input-icon" />
+                <input
+                  type="text"
+                  id="lastName"
+                  placeholder="Doe"
+                  value={lastName}
+                  required
+                  onChange={(e) => setLastName(e.target.value)}
+                  disabled={loading}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="form-field">
+            <label htmlFor="email">Work Email</label>
+            <div className="input-with-icon">
+              <FiMail className="input-icon" />
+              <input
+                type="email"
+                id="email"
+                placeholder="john.doe@company.com"
+                value={email}
+                required
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={loading}
+              />
+            </div>
+          </div>
+
+          <div className="form-field">
+            <label htmlFor="phone">Phone Number</label>
+            <div className="input-with-icon">
+              <FiPhone className="input-icon" />
+              <input
+                type="tel"
+                id="phone"
+                placeholder="+1 (555) 000-0000"
+                value={phone}
+                required
+                onChange={(e) => setPhone(e.target.value)}
+                disabled={loading}
+              />
+            </div>
+          </div>
+
+          <div className="modal-footer">
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={() => setShowAddEmployeeForm(false)}
+              disabled={loading}
+            >
+              Cancel
+            </button>
+            <button type="submit" className="btn btn-primary" disabled={loading}>
+              {loading ? "Adding..." : "Add Employee"}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };

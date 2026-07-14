@@ -1,10 +1,10 @@
-import "./index.css";
-import { useContext, useState, useEffect } from "react";
-import HrmsContext from "../../context";
+import React, { useContext, useEffect, useMemo } from "react";
 import Header from "../../components/common/Header";
 import Sidebar from "../../components/common/Sidebar";
 import PageHeader from "../../components/PageHeader";
 import EmployeesTable from "../../components/employees/EmployeesTable";
+import HrmsContext from "../../context";
+import "../Home/index.css";
 
 const AssignedMembers = () => {
   const {
@@ -14,42 +14,41 @@ const AssignedMembers = () => {
     employeesState,
   } = useContext(HrmsContext);
 
-  const [membersList, setMembersList] = useState([]);
-
-  const getTeamMembers = () => {
-    const data = employeesState.data.filter((employee) => {
-      return assignedMembersState.data.some((member) => {
-        return member.employee_id === employee.id;
-      });
-    });
-
-    setMembersList(data);
-  };
-
   useEffect(() => {
     fetchEmployees();
     fetchAssignedMembers();
   }, []);
 
-  useEffect(() => {
-    if (
-      employeesState.data.length > 0 &&
-      assignedMembersState.data.length > 0
-    ) {
-      getTeamMembers();
-    }
+  // Memoize assigned employee set lookup
+  const membersList = useMemo(() => {
+    const assignedEmployeeIds = new Set(
+      assignedMembersState.data.map((member) => member.employee_id)
+    );
+
+    return employeesState.data.filter((employee) =>
+      assignedEmployeeIds.has(employee.id)
+    );
   }, [employeesState.data, assignedMembersState.data]);
 
   return (
-    <div className="assigned-members-page">
+    <div className="page-container">
       <Header />
-      <div className="assigned-row-layout">
+      <div className="page-layout">
         <Sidebar />
-        <div className="assigned-main">
-          <div className="assigned-main-content">
+        <main className="main-content">
+          <PageHeader
+            title="Assigned Employees"
+            employeesCount={membersList.length}
+          />
+
+          {membersList.length === 0 ? (
+            <div className="empty-state-card">
+              <p>No employees are currently assigned to any team.</p>
+            </div>
+          ) : (
             <EmployeesTable displayEmployees={membersList} />
-          </div>
-        </div>
+          )}
+        </main>
       </div>
     </div>
   );

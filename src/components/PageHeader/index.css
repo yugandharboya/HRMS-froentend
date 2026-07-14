@@ -1,31 +1,63 @@
-.page-header {
-  background-color: #ffffff;
+.page-header-card {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 20px;
-  /* overflow: hidden; */
+  padding: 1rem 1.5rem;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 1.25rem;
 }
 
-.main-content-header-title {
-  margin: 0;
-}
-.add-employee-button {
-  background-color: #1976d2;
-  color: #ffffff;
-  height: 30px;
-  min-width: 100px;
-  border-width: 0px;
-  border-radius: 8px;
-  font-size: 15px;
+.page-header-title-box {
   display: flex;
   align-items: center;
-  justify-content: center;
-  font-family: "Roboto", sans-serif;
-  font-weight: bold;
-  cursor: pointer;
-  outline: none;
+  gap: 0.75rem;
+  color: var(--text-primary);
 }
-.add-employee-button:hover {
-  background-color: #1565c0;
+
+.header-title-icon {
+  font-size: 1.5rem;
+  color: var(--primary);
+}
+
+.page-header-title-box h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.header-count {
+  color: var(--text-secondary);
+  font-weight: 500;
+  font-size: 1.1rem;
+}
+
+.btn-add-employee {
+  background-color: var(--primary);
+  color: #ffffff;
+  padding: 0.625rem 1.25rem;
+  border-radius: var(--radius-sm);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.btn-add-employee:hover {
+  background-color: var(--primary-hover);
+}
+
+@media (max-width: 580px) {
+  .page-header-card {
+    padding: 1rem;
+  }
+  .btn-add-employee span {
+    display: none;
+  }
+  .btn-add-employee {
+    padding: 0.625rem;
+  }
 }

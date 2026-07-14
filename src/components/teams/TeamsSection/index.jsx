@@ -1,53 +1,60 @@
-import "./index.css";
-import { useEffect, useState, useContext } from "react";
-import Cookies from "js-cookie";
-import { useNavigate, Link, useLocation } from "react-router-dom";
+import React, { useContext } from "react";
 import HrmsContext from "../../../context";
-import Header from "../../common/Header";
-import Sidebar from "../../common/Sidebar";
-const TeamsSection = ({ variant }) => {
-  const navigate = useNavigate();
+import { FiPlus, FiUsers, FiLayers } from "react-icons/fi";
+import "./index.css";
+
+const TeamsSection = ({ variant = "" }) => {
   const {
     teamsState,
-    fetchTeams,
-    showAddTeamForm,
     setShowAddTeamForm,
     setActiveTeamId,
     activeTeamId,
   } = useContext(HrmsContext);
+
   return (
-    <div className={`teams-container ${variant}`}>
+    <div className={`teams-section-card ${variant}`}>
       <div className="teams-header">
-        <h2 className="teams-header-title">Teams ({teamsState.data.length})</h2>
+        <div className="teams-title-badge">
+          <FiLayers className="teams-icon" />
+          <h2>Teams ({teamsState.data.length})</h2>
+        </div>
         <button
-          className="add-team-button"
-          onClick={() => setShowAddTeamForm((prev) => !prev)}
+          className="add-team-btn"
+          onClick={() => setShowAddTeamForm(true)}
         >
-          Add Team
+          <FiPlus />
+          <span>Add Team</span>
         </button>
       </div>
-      <ul className="teams-list">
+
+      <div className="teams-grid">
         {teamsState.data.length === 0 ? (
-          <p>No teams available</p>
+          <div className="empty-teams-box">
+            <p>No teams created yet.</p>
+          </div>
         ) : (
-          teamsState.data.map((team) => (
-            <li
-              className={activeTeamId === team.id ? "active-team-card" : ""}
-              key={team.id}
-            >
-              <Link
-                // to={`/teamMembers`}
-                className="team-card"
+          teamsState.data.map((team) => {
+            const isActive = activeTeamId === team.id;
+            return (
+              <div
+                key={team.id}
+                className={`team-card ${isActive ? "active" : ""}`}
                 onClick={() => setActiveTeamId(team.id)}
               >
-                <h4 className="team-name">{team.name}</h4>
-                <p className="team-employees-text">employees</p>
-              </Link>
-            </li>
-          ))
+                <div className="team-card-header">
+                  <span className="team-name">{team.name}</span>
+                  <FiUsers className="team-card-icon" />
+                </div>
+                <p className="team-desc">
+                  {team.description || "Active Workspace Team"}
+                </p>
+              </div>
+            );
+          })
         )}
-      </ul>
+      </div>
     </div>
   );
 };
+
 export default TeamsSection;

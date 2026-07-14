@@ -1,68 +1,71 @@
-import "./index.css";
+import React, { useContext } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { RiDashboardHorizontalFill } from "react-icons/ri";
 import { PiUsersThreeFill } from "react-icons/pi";
 import { BsMicrosoftTeams } from "react-icons/bs";
 import { MdAssignmentInd } from "react-icons/md";
-
-import { Link, useLocation } from "react-router-dom";
+import HrmsContext from "../../../context";
+import "./index.css";
 
 const Sidebar = () => {
   const location = useLocation();
+  const { isMobileMenuOpen, setIsMobileMenuOpen } = useContext(HrmsContext);
+
+  const navItems = [
+    {
+      path: "/",
+      label: "Dashboard",
+      icon: <RiDashboardHorizontalFill className="sidebar-icon" />,
+    },
+    {
+      path: "/employees",
+      label: "Employees",
+      icon: <PiUsersThreeFill className="sidebar-icon" />,
+    },
+    {
+      path: "/teams",
+      label: "Teams",
+      icon: <BsMicrosoftTeams className="sidebar-icon" />,
+    },
+    {
+      path: "/assignedMembers",
+      label: "Assigned Employees",
+      icon: <MdAssignmentInd className="sidebar-icon" />,
+    },
+  ];
+
+  const handleLinkClick = () => {
+    setIsMobileMenuOpen(false);
+  };
+
   return (
-    <div className="sidebar-layout">
-      <div className="sidebar-element">
-        <RiDashboardHorizontalFill className="sidebar-icon" />
-        <Link
-          to="/"
-          className={
-            location.pathname === "/" ? "sidebar-item active" : "sidebar-item"
-          }
-        >
-          Dashboard
-        </Link>
-      </div>
+    <>
+      {isMobileMenuOpen && (
+        <div
+          className="sidebar-backdrop"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
 
-      <div className="sidebar-element">
-        <PiUsersThreeFill className="sidebar-icon" />
-        <Link
-          to="/employees"
-          className={
-            location.pathname === "/employees"
-              ? "sidebar-item active"
-              : "sidebar-item"
-          }
-        >
-          Employees
-        </Link>
-      </div>
-      <div className="sidebar-element">
-        <BsMicrosoftTeams className="sidebar-icon" />
-        <Link
-          to="/teams"
-          className={
-            location.pathname === "/teams"
-              ? "sidebar-item active"
-              : "sidebar-item"
-          }
-        >
-          Teams
-        </Link>
-      </div>
-
-      <div className="sidebar-element">
-        <MdAssignmentInd className="sidebar-icon" />
-        <Link
-          to="/assignedMembers"
-          className={
-            location.pathname === "/assignedMembers"
-              ? "sidebar-item active"
-              : "sidebar-item"
-          }
-        >
-          Assigned Employees
-        </Link>
-      </div>
-    </div>
+      <aside className={`sidebar-layout ${isMobileMenuOpen ? "open-mobile" : ""}`}>
+        <nav className="sidebar-nav">
+          {navItems.map((item) => {
+            const isActive = location.pathname === item.path;
+            return (
+              <Link
+                key={item.path}
+                to={item.path}
+                className={`sidebar-link ${isActive ? "active" : ""}`}
+                onClick={handleLinkClick}
+              >
+                {item.icon}
+                <span className="sidebar-label">{item.label}</span>
+              </Link>
+            );
+          })}
+        </nav>
+      </aside>
+    </>
   );
 };
 

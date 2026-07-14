@@ -1,116 +1,125 @@
-import { BASE_URL } from "../../../constants/constants";
-
-import "./index.css";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import Cookies from "js-cookie";
+import { registerApi } from "../../../services/api";
+import { HiBuildingOffice2 } from "react-icons/hi2";
+import "../LoginAdmin/index.css";
 
 const RegisterAdmin = () => {
   const [orgName, setOrgName] = useState("");
   const [adminName, setAdminName] = useState("");
-  const [email, setemail] = useState("");
-  const [password, setpassword] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const navigate = useNavigate();
 
   const submitForm = async (event) => {
     event.preventDefault();
-    console.log("Submitting form with:", {
-      orgName,
-      adminName,
-      email,
-      password,
-    });
-
-    const userDetails = { orgName, adminName, email, password };
+    setErrorMsg("");
+    setLoading(true);
 
     try {
-      const url = `${BASE_URL}/auth/register`;
-      const options = {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(userDetails),
-      };
-      const response = await fetch(url, options);
-      console.log("Response status:", response.status);
-      const data = await response.json();
-      if (!response.ok) {
-        setErrorMsg(data.message || "Registration failed");
-        return;
-      }
+      const data = await registerApi({
+        orgName,
+        adminName,
+        email,
+        password,
+      });
 
-      Cookies.set("jwt_token", data.token);
-      alert("Registration Successful! Please Login.");
-      navigate("/auth/login");
+      if (data.token) {
+        Cookies.set("jwt_token", data.token, { expires: 1 });
+        navigate("/");
+      } else {
+        navigate("/auth/login");
+      }
     } catch (error) {
-      console.error("Error during registration:", error);
+      setErrorMsg(error.message || "Registration failed");
+    } finally {
+      setLoading(false);
     }
   };
+
   return (
-    <div className="Register-form-container">
-      <h2>Register</h2>
-      <form className="register-form" onSubmit={submitForm}>
-        <div className="form-group">
-          <label htmlFor="orgName">Organization Name:</label>
-          <input
-            type="text"
-            id="orgName"
-            name="orgName"
-            value={orgName}
-            onChange={(event) => setOrgName(event.target.value)}
-            required
-          />
+    <div className="auth-page-container">
+      <div className="auth-card">
+        <div className="auth-header">
+          <div className="auth-logo">
+            <HiBuildingOffice2 />
+          </div>
+          <h2>Create Organization</h2>
+          <p className="auth-subtitle">Register your company workspace on HRMS</p>
         </div>
-        <div className="form-group">
-          <label htmlFor="adminName">Admin Name:</label>
-          <input
-            type="text"
-            id="adminName"
-            name="adminName"
-            value={adminName}
-            onChange={(event) => setAdminName(event.target.value)}
-            required
-          />
+
+        {errorMsg && <div className="auth-error-banner">{errorMsg}</div>}
+
+        <form className="auth-form" onSubmit={submitForm}>
+          <div className="form-group">
+            <label htmlFor="orgName">Organization Name</label>
+            <input
+              type="text"
+              id="orgName"
+              placeholder="Acme Corp"
+              value={orgName}
+              onChange={(e) => setOrgName(e.target.value)}
+              required
+              disabled={loading}
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="adminName">Admin Name</label>
+            <input
+              type="text"
+              id="adminName"
+              placeholder="John Doe"
+              value={adminName}
+              onChange={(e) => setAdminName(e.target.value)}
+              required
+              disabled={loading}
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="email">Work Email</label>
+            <input
+              type="email"
+              id="email"
+              placeholder="admin@acme.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              disabled={loading}
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="password">Password</label>
+            <input
+              type="password"
+              id="password"
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              disabled={loading}
+            />
+          </div>
+
+          <button type="submit" className="auth-submit-btn" disabled={loading}>
+            {loading ? <span className="btn-spinner"></span> : "Create Workspace"}
+          </button>
+        </form>
+
+        <div className="auth-footer">
+          <span>Already have an account?</span>
+          <Link to="/auth/login" className="auth-switch-link">
+            Sign In
+          </Link>
         </div>
-        <div className="form-group">
-          <label htmlFor="email">Email:</label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={email}
-            onChange={(event) => setemail(event.target.value)}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="password">Password:</label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            value={password}
-            onChange={(event) => setpassword(event.target.value)}
-            required
-          />
-        </div>
-        <button type="submit" className="login-button">
-          Register
-        </button>
-        {errorMsg && <p className="error-msg">{errorMsg}</p>}
-      </form>
-      <div className="register-container">
-        do you have an account?
-        <button
-          className="register-button"
-          onClick={() => navigate("/auth/login")}
-        >
-          Login
-        </button>
       </div>
     </div>
   );
 };
+
 export default RegisterAdmin;

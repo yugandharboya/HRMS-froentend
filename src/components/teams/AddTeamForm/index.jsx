@@ -1,83 +1,100 @@
-import { BASE_URL } from "../../../constants/constants";
-import "./index.css";
-import { useState } from "react";
-import Cookies from "js-cookie";
-import { useNavigate } from "react-router-dom";
-import { useContext } from "react";
+import React, { useState, useContext } from "react";
+import { addTeamApi } from "../../../services/api";
 import HrmsContext from "../../../context";
+import { FiX, FiUsers, FiAlignLeft } from "react-icons/fi";
+import "../../employees/AddEmployeeForm/index.css";
 
 const AddTeamForm = () => {
-  const navigate = useNavigate();
   const [teamName, setTeamName] = useState("");
   const [teamDescription, setTeamDescription] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+
   const { fetchTeams, setShowAddTeamForm } = useContext(HrmsContext);
 
-  const submitAddTeam = async (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    const token = Cookies.get("jwt_token");
-    if (!token) {
-      alert("login timeout please login again");
-      navigate("/auth/login");
-      return;
-    }
+    setErrorMsg("");
+    setLoading(true);
+
     try {
-      const url = `${BASE_URL}/teams`;
-      const teamDetails = { name: teamName, description: teamDescription };
-      const options = {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(teamDetails),
-      };
-      const response = await fetch(url, options);
-      if (!response.ok) {
-        const data = await response.json();
-        alert(data.message || "Failed to add team");
-        throw new Error("Failed to add team");
-      }
-      alert("Team added successfully");
+      await addTeamApi({
+        name: teamName,
+        description: teamDescription,
+      });
+      await fetchTeams();
       setShowAddTeamForm(false);
-      fetchTeams();
     } catch (error) {
-      alert(`Error occurred while adding the team: ${error.message}`);
+      setErrorMsg(error.message || "Failed to create team");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="add-team-form-container">
-      <form className="add-team-form" onSubmit={submitAddTeam}>
-        <div className="form-field">
-          <label htmlFor="teamName">Team Name:</label>
-          <input
-            type="text"
-            id="teamName"
-            value={teamName}
-            onChange={(e) => setTeamName(e.target.value)}
-          />
-        </div>
-        <div className="form-field">
-          <label htmlFor="teamDescription">Team Description:</label>
-          <textarea
-            id="teamDescription"
-            value={teamDescription}
-            onChange={(e) => setTeamDescription(e.target.value)}
-          />
-        </div>
-        <div className="add-team-buttons-container">
-          <button type="submit" className="save-team-button">
-            Save Team
-          </button>
+    <div className="modal-overlay">
+      <div className="modal-card">
+        <div className="modal-header">
+          <h3>Create New Team</h3>
           <button
-            className="close-add-team-button"
+            className="modal-close-btn"
             onClick={() => setShowAddTeamForm(false)}
           >
-            Cancel
+            <FiX />
           </button>
         </div>
-      </form>
+
+        {errorMsg && <div className="modal-error-banner">{errorMsg}</div>}
+
+        <form className="modal-form" onSubmit={handleSubmit}>
+          <div className="form-field">
+            <label htmlFor="teamName">Team Name</label>
+            <div className="input-with-icon">
+              <FiUsers className="input-icon" />
+              <input
+                type="text"
+                id="teamName"
+                placeholder="Engineering, Design, HR..."
+                value={teamName}
+                onChange={(e) => setTeamName(e.target.value)}
+                required
+                disabled={loading}
+              />
+            </div>
+          </div>
+
+          <div className="form-field">
+            <label htmlFor="teamDescription">Team Description</label>
+            <div className="input-with-icon">
+              <FiAlignLeft className="input-icon" style={{ top: "0.875rem" }} />
+              <textarea
+                id="teamDescription"
+                placeholder="Brief summary of team functions and objectives"
+                value={teamDescription}
+                onChange={(e) => setTeamDescription(e.target.value)}
+                rows={3}
+                disabled={loading}
+              />
+            </div>
+          </div>
+
+          <div className="modal-footer">
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={() => setShowAddTeamForm(false)}
+              disabled={loading}
+            >
+              Cancel
+            </button>
+            <button type="submit" className="btn btn-primary" disabled={loading}>
+              {loading ? "Creating..." : "Save Team"}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };
+
 export default AddTeamForm;

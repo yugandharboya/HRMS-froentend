@@ -1,98 +1,87 @@
-import { BASE_URL } from "../../../constants/constants";
-
-import "./index.css";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import Cookies from "js-cookie";
+import { loginApi } from "../../../services/api";
+import { HiBuildingOffice2 } from "react-icons/hi2";
+import "./index.css";
 
 const LoginAdmin = () => {
   const navigate = useNavigate();
-  const [email, setemail] = useState("");
-  const [password, setpassword] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
   const submitLoginForm = async (event) => {
     event.preventDefault();
+    setErrorMsg("");
+    setLoading(true);
 
-    const userDetails = { email, password };
     try {
-      const url = `${BASE_URL}/auth/login`;
-      const options = {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(userDetails),
-      };
-      const response = await fetch(url, options);
-
-      let data = null;
-      try {
-        data = await response.json();
-      } catch {
-        // server responded but not json or empty body or plain text
-      }
-
-      if (response.status === 401 || response.status === 400) {
-        setErrorMsg(data?.message || "Invalid email or password");
-        return;
-      }
-
-      if (!response.ok) {
-        // 500, 502, etc
-        setErrorMsg("Server error. Please try again later.");
-        return;
-      }
-
+      const data = await loginApi({ email, password });
       Cookies.set("jwt_token", data.token, { expires: 1 });
-
       navigate("/");
     } catch (error) {
-      console.log(error.message);
+      setErrorMsg(error.message || "Invalid email or password");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="login-form-container">
-      <h2>Login</h2>
-      <form className="login-form" onSubmit={submitLoginForm}>
-        <div className="form-group">
-          <label htmlFor="email">Email:</label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={email}
-            onChange={(event) => setemail(event.target.value)}
-            required
-          />
+    <div className="auth-page-container">
+      <div className="auth-card">
+        <div className="auth-header">
+          <div className="auth-logo">
+            <HiBuildingOffice2 />
+          </div>
+          <h2>Sign in to HRMS</h2>
+          <p className="auth-subtitle">Enter your admin credentials to access your portal</p>
         </div>
-        <div className="form-group">
-          <label htmlFor="password">Password:</label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            value={password}
-            onChange={(event) => setpassword(event.target.value)}
-            required
-          />
+
+        {errorMsg && <div className="auth-error-banner">{errorMsg}</div>}
+
+        <form className="auth-form" onSubmit={submitLoginForm}>
+          <div className="form-group">
+            <label htmlFor="email">Work Email</label>
+            <input
+              type="email"
+              id="email"
+              placeholder="admin@company.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              disabled={loading}
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="password">Password</label>
+            <input
+              type="password"
+              id="password"
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              disabled={loading}
+            />
+          </div>
+
+          <button type="submit" className="auth-submit-btn" disabled={loading}>
+            {loading ? <span className="btn-spinner"></span> : "Sign In"}
+          </button>
+        </form>
+
+        <div className="auth-footer">
+          <span>Don't have an organization account?</span>
+          <Link to="/auth/register" className="auth-switch-link">
+            Register Organization
+          </Link>
         </div>
-        <button type="submit" className="login-button">
-          Login
-        </button>
-        {errorMsg && <p className="error-msg">{errorMsg}</p>}
-      </form>
-      <div className="register-container">
-        do not have an account?
-        <button
-          className="register-button"
-          onClick={() => navigate("/auth/register")}
-        >
-          Register
-        </button>
       </div>
     </div>
   );
 };
+
 export default LoginAdmin;

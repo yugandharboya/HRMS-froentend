@@ -1,45 +1,42 @@
-import "./index.css";
-import { useState, useEffect, useContext } from "react";
+import React, { useEffect, useContext } from "react";
 import Header from "../../components/common/Header";
-import EmployeesTable from "../../components/employees/EmployeesTable";
-import EditEmployee from "../../components/employees/EditEmployeeForm";
 import Sidebar from "../../components/common/Sidebar";
-import AddEmployeeForm from "../../components/employees/AddEmployeeForm";
-import HrmsContext from "../../context";
+import PageHeader from "../../components/PageHeader";
+import EmployeesTable from "../../components/employees/EmployeesTable";
 import LoadingView from "../../components/common/LoadingView";
 import ErrorView from "../../components/common/ErrorView";
-import PageHeader from "../../components/PageHeader";
+import HrmsContext from "../../context";
+import "../Home/index.css";
 
 const Employees = () => {
-  const { employeesState, fetchEmployees } = useContext(HrmsContext);
-  const [activeEmployeeToAdd, setActiveEmployeeToAdd] = useState(false);
+  const { employeesState, fetchEmployees, fetchAssignedMembers } = useContext(HrmsContext);
 
   useEffect(() => {
     fetchEmployees();
+    fetchAssignedMembers();
   }, []);
 
   return (
-    <div className="all-employees-page">
+    <div className="page-container">
       <Header />
-
-      {activeEmployeeToAdd && (
-        <AddEmployeeForm setActiveEmployeeToAdd={setActiveEmployeeToAdd} />
-      )}
-
-      <div className="all-employees-wrapper">
+      <div className="page-layout">
         <Sidebar />
-
-        <div className="main-content-area">
-          <PageHeader employeesCount={employeesState.data.length} />
-
-          {employeesState.error && <ErrorView />}
+        <main className="main-content">
+          <PageHeader
+            title="All Organization Employees"
+            employeesCount={employeesState.data.length}
+          />
 
           {employeesState.loading && <LoadingView />}
+
+          {employeesState.error && !employeesState.loading && <ErrorView />}
 
           {!employeesState.loading &&
             !employeesState.error &&
             employeesState.data.length === 0 && (
-              <p className="empty-text">No employees found in Database.</p>
+              <div className="empty-state-card">
+                <p>No employees found in database. Click "Add Employee" to create one.</p>
+              </div>
             )}
 
           {!employeesState.loading &&
@@ -47,7 +44,7 @@ const Employees = () => {
             employeesState.data.length > 0 && (
               <EmployeesTable displayEmployees={employeesState.data} />
             )}
-        </div>
+        </main>
       </div>
     </div>
   );

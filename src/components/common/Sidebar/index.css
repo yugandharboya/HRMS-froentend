@@ -1,41 +1,80 @@
 .sidebar-layout {
   position: fixed;
-  top: 60px;
+  top: 64px;
   left: 0;
+  height: calc(100vh - 64px);
+  width: 250px;
+  max-width: 85vw;
+  background-color: var(--surface);
+  border-right: 1px solid var(--border);
+  padding: 1.25rem 0.875rem;
   display: flex;
   flex-direction: column;
-  height: 100vh;
-  width: 250px;
-  padding: 20px;
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  z-index: 900;
+  transition: transform var(--transition-normal);
 }
-.sidebar-element {
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.sidebar-link {
   display: flex;
   align-items: center;
-  padding: 0px;
-  margin-top: 20px;
+  gap: 0.875rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  font-size: 0.925rem;
+  font-weight: 500;
+  transition: all var(--transition-fast);
 }
-.sidebar-item.active {
-  background-color: #2563eb !important;
-  color: #ffffff;
+
+.sidebar-link:hover {
+  background-color: var(--surface-alt);
+  color: var(--primary);
 }
-.sidebar-item {
-  font-size: 16px;
-  font-family: "Roboto";
-  color: #333333;
-  text-decoration: none;
-  border: none;
-  box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.1);
-  cursor: pointer;
-  background-color: transparent;
-  border-radius: 8px;
-  padding: 10px 15px;
+
+.sidebar-link.active {
+  background-color: var(--primary-light);
+  color: var(--primary);
+  font-weight: 600;
 }
-.sidebar-item:hover {
-  background-color: #f0f0f0;
-}
+
 .sidebar-icon {
-  margin-right: 10px;
-  font-size: 20px;
-  color: #333333;
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.sidebar-backdrop {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .sidebar-layout {
+    width: 250px;
+    max-width: 80vw;
+    transform: translateX(-100%);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .sidebar-layout.open-mobile {
+    transform: translateX(0);
+  }
+
+  .sidebar-backdrop {
+    display: block;
+    position: fixed;
+    top: 64px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: auto;
+    height: auto;
+    background-color: rgba(15, 23, 42, 0.4);
+    backdrop-filter: blur(2px);
+    z-index: 850;
+  }
 }

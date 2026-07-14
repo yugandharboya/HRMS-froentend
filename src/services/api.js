@@ -1,57 +1,67 @@
-import Cookies from "js-cookie";
+import { request } from "./apiClient";
 
-import { BASE_URL } from "../constants/constants";
-
-export const getEmployeesApi = async () => {
-  const token = Cookies.get("jwt_token");
-
-  const response = await fetch(`${BASE_URL}/employees`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+// Auth Services
+export const loginApi = (credentials) =>
+  request("/auth/login", {
+    method: "POST",
+    body: JSON.stringify(credentials),
   });
 
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data.message || "Failed to fetch employees");
-  }
-
-  return data;
-};
-export const getTeamsApi = async () => {
-  const token = Cookies.get("jwt_token");
-
-  const response = await fetch(`${BASE_URL}/teams`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
+export const registerApi = (userData) =>
+  request("/auth/register", {
+    method: "POST",
+    body: JSON.stringify(userData),
   });
 
-  const data = await response.json();
+// Employee Services
+export const getEmployeesApi = () => request("/employees");
 
-  if (!response.ok) {
-    throw new Error("Failed to fetch teams");
-  }
-
-  return data;
-};
-export const getAssignedMembersApi = async () => {
-  const token = Cookies.get("jwt_token");
-
-  const response = await fetch(`${BASE_URL}/assigned_members`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
+export const addEmployeeApi = (employeeData) =>
+  request("/employees", {
+    method: "POST",
+    body: JSON.stringify(employeeData),
   });
 
-  const data = await response.json();
+export const updateEmployeeApi = (id, employeeData) =>
+  request(`/employees/${id}`, {
+    method: "PUT",
+    body: JSON.stringify(employeeData),
+  });
 
-  if (!response.ok) {
-    throw new Error(data.message || "Failed to fetch assigned members");
-  }
+export const deleteEmployeeApi = (id) =>
+  request(`/employees/${id}`, {
+    method: "DELETE",
+  });
 
-  return data;
-};
+// Team Services
+export const getTeamsApi = () => request("/teams");
+
+export const addTeamApi = (teamData) =>
+  request("/teams", {
+    method: "POST",
+    body: JSON.stringify(teamData),
+  });
+
+export const updateTeamApi = (id, teamData) =>
+  request(`/teams/${id}`, {
+    method: "PUT",
+    body: JSON.stringify(teamData),
+  });
+
+export const deleteTeamApi = (id) =>
+  request(`/teams/${id}`, {
+    method: "DELETE",
+  });
+
+export const assignEmployeeToTeamApi = (teamId, employeeId) =>
+  request(`/teams/${teamId}/assign_team`, {
+    method: "POST",
+    body: JSON.stringify({ employeeId }),
+  });
+
+export const unassignEmployeeFromTeamApi = (teamId, employeeId) =>
+  request(`/teams/${teamId}/unassign/${employeeId}`, {
+    method: "DELETE",
+  });
+
+export const getAssignedMembersApi = () => request("/teams/assigned_members/all");
